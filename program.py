@@ -1,5 +1,90 @@
-cnx = mysql.connector.connect(user='root', password='root',
-host='127.0.0.1')
+import csv
+import mysql.connector
 
-msg = "hello world"
-print(msg)
+cnx = mysql.connector.connect(user='root', password='root',
+host='127.0.0.1', database='hedegard')
+DB_NAME='hedegard'
+
+# with open('./data/planets.csv') as csv_file:
+#   csvfile = csv.reader(csv_file, delimiter=',')
+#   all_value = []
+#   for row in csvfile:
+#     value = (row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8])
+#     all_value.append(value)
+
+# create = "CREATE TABLE planets (name varchar(50) not null, rotation_period int, orbital_period int, diameter int, climate nvarchar(200), gravity nvarchar(20), terrain nvarchar(200), surface_water int, population int, primary key(name))"
+# insert = "insert into planets (`name`, rotation_period ,`orbital_period`,`diameter`,`climate`,`gravity`,`terrain`,`surface_water`,`population`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+
+# insert2 = "LOAD DATA LOCAL INFILE './data/planets.csv' INTO TABLE test.dummy FIELDS TERMINATED BY ',' "
+
+mycursor = cnx.cursor()
+#mycursor.execute(create_database)
+# mycursor.executemany(insert, all_value)
+# cnx.commmit()
+
+# mycursor = cnx.cursor()
+# mycursor.execute("SHOW DATABASES LIKE 'hedegard'")
+# print("Databases: ")
+# for x in mycursor:
+#     print(x[0])
+
+def list_planets():
+  print("list of planets") 
+  # list all planets
+  # press any key to return to main
+
+def planet_details():
+  planet = input ("Enter name of a planet: ")
+  # display planet details
+  # press any key to return to main
+
+def species_height():
+  planet = input ("Enter an average height: ")
+  # display species that fulfills condition
+  # press any key to return to main
+
+def desired_climate():
+  species = input ("Enter name of a species: ")
+  # display species that fulfills condition
+  # press any key to return to main
+
+def average_lifespan():
+  print("list of species") 
+  # list name of species classification and their average lifespan
+  # press any key to return to main
+
+def main_menu():
+  while True:
+    print ("1. List all planets.") 
+    print ("2. Search for planet details.")
+    print ("3. Search for species with height higher than given number.")
+    print ("4. What is the most likely desired climate of the given species?")
+    print ("5. What is the average lifespan per species classification?")
+    print ("Q. Quit")
+    print ("---------")
+    choice = input ("Please choose one option: ")
+
+    if choice == "1":
+          list_planets()
+          break
+    elif choice == "2":
+          planet_details()
+          break
+    elif choice == "3":
+          species_height()
+          break
+    elif choice == "4":
+          desired_climate()
+          break
+    elif choice == "5":
+          average_lifespan()
+          break
+    elif choice == "Q":
+          quit()
+    else:
+          print("Please enter a valid input")
+          print()
+          continue
+
+main_menu()
