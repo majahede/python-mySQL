@@ -18,8 +18,12 @@ DB_NAME='hedegard'
 
 # insert2 = "LOAD DATA LOCAL INFILE './data/planets.csv' INTO TABLE test.dummy FIELDS TERMINATED BY ',' "
 
+create_species_table = "CREATE TABLE species (name varchar(50) not null, classification nvarchar(50), destiantion nvarchar(50), average_height int, skin_colors nvarchar(200), hair_colors nvarchar(200), eye_colors nvarchar(200), average_lifespan int, language nvarchar(50), homeworld nvarchar(50), primary key(name))"
+# insert = "insert into planets (`name`, rotation_period ,`orbital_period`,`diameter`,`climate`,`gravity`,`terrain`,`surface_water`,`population`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
 mycursor = cnx.cursor()
 #mycursor.execute(create_database)
+#mycursor.execute(create_species_table)
 # mycursor.executemany(insert, all_value)
 # cnx.commmit()
 
@@ -50,18 +54,20 @@ def planet_details():
 
 def species_height():
   planet = input ("Enter an average height: ")
-  # display species that fulfills condition
-  # press any key to return to main
+  mycursor.execute("SELECT * from species WHERE average_height > 100")
+  for x in mycursor:
+       print(x[0])
+  return_to_main()
 
 def desired_climate():
   species = input ("Enter name of a species: ")
   # display species that fulfills condition
-  # press any key to return to main
+  return_to_main()
 
 def average_lifespan():
   print("list of species") 
   # list name of species classification and their average lifespan
-  # press any key to return to main
+  return_to_main()
 
 def main_menu():
   while True:
