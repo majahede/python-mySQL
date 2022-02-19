@@ -23,16 +23,15 @@ mycursor = cnx.cursor()
 # mycursor.executemany(insert, all_value)
 # cnx.commmit()
 
-# mycursor = cnx.cursor()
-# mycursor.execute("SHOW DATABASES LIKE 'hedegard'")
-# print("Databases: ")
-# for x in mycursor:
-#     print(x[0])
+def return_to_main():
+  species = input ("Press any key to return to main menu: ")
+  main_menu()
 
 def list_planets():
-  print("list of planets") 
-  # list all planets
-  # press any key to return to main
+  mycursor.execute("SELECT * from planets")
+  for x in mycursor:
+       print(x[0])
+  return_to_main()
 
 def planet_details():
   planet = input ("Enter name of a planet: ")
