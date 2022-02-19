@@ -35,8 +35,18 @@ def list_planets():
 
 def planet_details():
   planet = input ("Enter name of a planet: ")
-  # display planet details
-  # press any key to return to main
+  mycursor.execute("SELECT * from planets WHERE name = '" + planet + "'")
+  for x in mycursor:
+       print("Name: " + x[0])
+       print("Rotation period: " + str(x[1]))
+       print("Orbital period: " + str(x[2]))
+       print("Diameter: " + str(x[3]))
+       print("Climate: " + x[4])
+       print("Gravity: " + x[5])
+       print("Terrain: " + x[6])
+       print("Surface water: " + str(x[7]))
+       print("Population: " + str(x[8]))
+       return_to_main()
 
 def species_height():
   planet = input ("Enter an average height: ")
