@@ -75,8 +75,9 @@ def desired_climate():
   return_to_main()
 
 def average_lifespan():
-  print("list of species") 
-  # list the names of species classification and their average lifespan. 
+  mycursor.execute("SELECT classification, AVG(average_lifespan) from species GROUP BY classification")
+  for x in mycursor:
+      print(x[0], round(x[1]))
   return_to_main()
 
 def main_menu():
