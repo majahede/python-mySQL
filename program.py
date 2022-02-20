@@ -1,34 +1,36 @@
 import csv
 import mysql.connector
+import pandas
 
 cnx = mysql.connector.connect(user='root', password='root',
 host='127.0.0.1', database='hedegard')
 DB_NAME='hedegard'
 
-# with open('./data/planets.csv') as csv_file:
-#   csvfile = csv.reader(csv_file, delimiter=',')
-#   all_value = []
-#   for row in csvfile:
-#     value = (row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8])
-#     all_value.append(value)
+with open('./data/planets.csv') as csv_file:
+  csvfile = csv.reader(csv_file, delimiter=',')
+  all_value = []
+  for row in csvfile:
+    value = (row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8])
+    all_value.append(value)
+  
 
-# create = "CREATE TABLE planets (name varchar(50) not null, rotation_period int, orbital_period int, diameter int, climate nvarchar(200), gravity nvarchar(20), terrain nvarchar(200), surface_water int, population int, primary key(name))"
-# insert = "insert into planets (`name`, rotation_period ,`orbital_period`,`diameter`,`climate`,`gravity`,`terrain`,`surface_water`,`population`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+#create = "CREATE TABLE planets (name varchar(50) not null, rotation_period int, orbital_period int, diameter int, climate nvarchar(200), gravity nvarchar(20), terrain nvarchar(200), surface_water int, population int, primary key(name))"
+#insert = "insert into planets (`name`, rotation_period ,`orbital_period`,`diameter`,`climate`,`gravity`,`terrain`,`surface_water`,`population`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 
 # insert2 = "LOAD DATA LOCAL INFILE './data/planets.csv' INTO TABLE test.dummy FIELDS TERMINATED BY ',' "
 
-create_species_table = "CREATE TABLE species (name varchar(50) not null, classification nvarchar(50), destiantion nvarchar(50), average_height int, skin_colors nvarchar(200), hair_colors nvarchar(200), eye_colors nvarchar(200), average_lifespan int, language nvarchar(50), homeworld nvarchar(50), primary key(name))"
+#create_species_table = "CREATE TABLE species (name varchar(50) not null, classification nvarchar(50), destiantion nvarchar(50), average_height int, skin_colors nvarchar(200), hair_colors nvarchar(200), eye_colors nvarchar(200), average_lifespan int, language nvarchar(50), homeworld nvarchar(50), primary key(name))"
 # insert = "insert into planets (`name`, rotation_period ,`orbital_period`,`diameter`,`climate`,`gravity`,`terrain`,`surface_water`,`population`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 mycursor = cnx.cursor()
 #mycursor.execute(create_database)
 #mycursor.execute(create_species_table)
-# mycursor.executemany(insert, all_value)
+#mycursor.executemany(insert, all_value)
 # cnx.commmit()
 
 def return_to_main():
-  species = input ("Press any key to return to main menu: ")
+  input ("Press any key to return to main menu: ")
   main_menu()
 
 def list_planets():
@@ -53,15 +55,17 @@ def planet_details():
        return_to_main()
 
 def species_height():
-  planet = input ("Enter an average height: ")
-  mycursor.execute("SELECT * from species WHERE average_height > 100")
+  height = input ("Enter an average height: ")
+  mycursor.execute("SELECT * from species WHERE average_height > " + height)
   for x in mycursor:
        print(x[0])
   return_to_main()
 
 def desired_climate():
   species = input ("Enter name of a species: ")
-  # display species that fulfills condition
+  mycursor.execute("SELECT planets.climate, species.name from planets, species WHERE planets.name = species.homeworld and species.name = '" + species + "'")
+  for x in mycursor:
+       print("The desired climate climate is " + x[0])
   return_to_main()
 
 def average_lifespan():
