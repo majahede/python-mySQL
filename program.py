@@ -1,83 +1,97 @@
 import csv
 import mysql.connector
-import pandas
 
 cnx = mysql.connector.connect(user='root', password='root',
 host='127.0.0.1', database='hedegard')
 DB_NAME='hedegard'
+cursor = cnx.cursor()
 
-with open('./data/planets.csv') as csv_file:
-  csvfile = csv.reader(csv_file, delimiter=',')
-  all_planets = []
-  for row in csvfile:
-    value = (row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8])
-    all_planets.append(value)
+file = open('./data/planets.csv')
+planets_data = csv.reader(file)
+next(planets_data)
+all_planets = []
+for row in planets_data:
+  value = [row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8]]
+  for x in range(1, 9):
+    if value[x] == "NA":
+      value[x] = None
+  all_planets.append(value)
 
-with open('./data/species.csv') as csv_file:
-  csvfile = csv.reader(csv_file, delimiter=',')
-  all_species = []
-  for row in csvfile:
-    value = (row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8], row[9])
-    all_species.append(value)
-  
+file = open('./data/species.csv')
+species_data = csv.reader(file)
+next(species_data)
+all_species = []
+for row in species_data:
+  value = [row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8], row[9]]
+  for x in range(1, 10):
+    if value[x] == "NA" or value[x] == "indefinite":
+      value[x] = None
+  all_species.append(value)
 
-create_planets_table = "CREATE TABLE planets (name varchar(50) not null, rotation_period int, orbital_period int, diameter int, climate nvarchar(200), gravity nvarchar(20), terrain nvarchar(200), surface_water int, population int, primary key(name))"
+create_database = "CREATE DATABASE IF NOT EXISTS " + DB_NAME
+
+drop_planets_table = "DROP TABLE IF EXISTS planets"
+drop_species_table = "DROP TABLE IF EXISTS species"
+
+create_planets_table = "CREATE TABLE planets (name varchar(50) not null, rotation_period int, orbital_period int, diameter int, climate nvarchar(200), gravity nvarchar(200), terrain nvarchar(200), surface_water int, population bigint, primary key(name))"
+
+create_species_table = "CREATE TABLE species (name varchar(50) not null, classification nvarchar(200), destination nvarchar(200), average_height int, skin_colors nvarchar(200), hair_colors nvarchar(200), eye_colors nvarchar(200), average_lifespan int, language nvarchar(200), homeworld nvarchar(200), primary key(name))"
 insert_planets = "insert into planets (`name`, `rotation_period` ,`orbital_period`,`diameter`,`climate`,`gravity`,`terrain`,`surface_water`,`population`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-create_planets_table = "CREATE TABLE species (name varchar(50) not null, classification nvarchar(50), destiantion nvarchar(50), average_height int, skin_colors nvarchar(200), hair_colors nvarchar(200), eye_colors nvarchar(200), average_lifespan int, language nvarchar(50), homeworld nvarchar(50), primary key(name))"
-insert_planets = "insert into planets (`name`, `classifiation` ,`destination`,`average_height`,`skin_colors`,`hair_colors`,`eye_colors`,`average_lifespan`,`language`, `homeworld`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+insert_species = "insert into species (`name`, `classification` ,`destination`,`average_height`,`skin_colors`,`hair_colors`,`eye_colors`,`average_lifespan`,`language`, `homeworld`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-mycursor = cnx.cursor()
-#mycursor.execute(create_database)
-#mycursor.execute(create_planets_table)
-#mycursor.execute(create_species_table)
-#mycursor.executemany(insert_planets, all_planets)
-#mycursor.executemany(insert_species, all_species)
-# cnx.commmit()
+cursor.execute(create_database)
+cursor.execute(drop_planets_table)
+cursor.execute(drop_species_table)
+cursor.execute(create_planets_table)
+cursor.execute(create_species_table)
+cursor.executemany(insert_planets, all_planets)
+cursor.executemany(insert_species, all_species)
+cnx.commit()
 
 def return_to_main():
-  input ("Press any key to return to main menu: ")
+  input ("Press ENTER to return to main menu: ")
   main_menu()
 
 def list_planets():
-  mycursor.execute("SELECT * from planets")
-  for x in mycursor:
+  cursor.execute("SELECT * from planets")
+  for x in cursor:
        print(x[0])
   return_to_main()
 
 def planet_details():
   planet = input ("Enter name of a planet: ")
-  mycursor.execute("SELECT * from planets WHERE name = '" + planet + "'")
-  for x in mycursor:
+  cursor.execute("SELECT * from planets WHERE name = '" + planet + "'")
+  for x in cursor:
        print("Name: " + x[0])
        print("Rotation period: " + str(x[1]))
        print("Orbital period: " + str(x[2]))
        print("Diameter: " + str(x[3]))
-       print("Climate: " + x[4])
-       print("Gravity: " + x[5])
-       print("Terrain: " + x[6])
+       print("Climate: " + str(x[4]))
+       print("Gravity: " + str(x[5]))
+       print("Terrain: " + str(x[6]))
        print("Surface water: " + str(x[7]))
        print("Population: " + str(x[8]))
-       return_to_main()
+  return_to_main()
 
 def species_height():
   height = input ("Enter an average height: ")
-  mycursor.execute("SELECT * from species WHERE average_height > " + height)
-  for x in mycursor:
+  cursor.execute("SELECT * from species WHERE average_height > " + height)
+  for x in cursor:
        print(x[0])
   return_to_main()
 
 def desired_climate():
   species = input ("Enter name of a species: ")
-  mycursor.execute("SELECT planets.climate, species.name from planets, species WHERE planets.name = species.homeworld and species.name = '" + species + "'")
-  for x in mycursor:
-       print("The desired climate climate is " + x[0])
+  cursor.execute("SELECT planets.climate, species.name from planets, species WHERE planets.name = species.homeworld and species.name = '" + species + "'")
+  for x in cursor:
+       print(x[0])
   return_to_main()
 
 def average_lifespan():
-  mycursor.execute("SELECT classification, AVG(average_lifespan) from species GROUP BY classification")
-  for x in mycursor:
-      print(x[0], round(x[1]))
+  cursor.execute("SELECT classification, AVG(average_lifespan) from species GROUP BY classification")
+  for x in cursor:
+      print(x[0], x[1])
   return_to_main()
 
 def main_menu():
