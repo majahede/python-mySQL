@@ -28,7 +28,7 @@ for row in species_data:
       value[x] = None            #To make these values Null in the database
   all_species.append(value)
 
-create_database = "CREATE DATABASE IF NOT EXISTS " + DB_NAME
+create_database = "CREATE DATABASE IF NOT EXISTS " + DB_NAME #Check if database with last name exists, create a database with last name if it does not exists
 
 drop_planets_table = "DROP TABLE IF EXISTS planets"
 drop_species_table = "DROP TABLE IF EXISTS species"
