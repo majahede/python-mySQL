@@ -14,7 +14,7 @@ for row in planets_data:
   value = [row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8]]
   for x in range(1, 9):
     if value[x] == "NA":
-      value[x] = None
+      value[x] = None        #To make this value Null in the database
   all_planets.append(value)
 
 file = open('./data/species.csv')
@@ -25,7 +25,7 @@ for row in species_data:
   value = [row[0], row[1], row[2],  row[3],  row[4],  row[5],  row[6], row[7], row[8], row[9]]
   for x in range(1, 10):
     if value[x] == "NA" or value[x] == "indefinite":
-      value[x] = None
+      value[x] = None            #To make these values Null in the database
   all_species.append(value)
 
 create_database = "CREATE DATABASE IF NOT EXISTS " + DB_NAME
